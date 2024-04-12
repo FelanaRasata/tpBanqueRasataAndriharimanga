@@ -24,9 +24,13 @@ public class CompteBancaire implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Integer id;
 
+    public Integer getId() {
+        return id;
+    }
+    
     private String nom;
     private int solde;
     
@@ -38,9 +42,7 @@ public class CompteBancaire implements Serializable {
         this.solde = solde;
     }
 
-    public Long getId() {
-        return id;
-    }
+    
 
     @Override
     public int hashCode() {
@@ -66,7 +68,7 @@ public class CompteBancaire implements Serializable {
     public String toString() {
         return "mg.itu.tpbanquerasataandriharimanga.entity.CompteBancaire[ id=" + id + " ]";
     }
-
+    
     public String getNom() {
         return nom;
     }
@@ -94,5 +96,5 @@ public class CompteBancaire implements Serializable {
             solde = 0;
         }
     }
-
+    
 }
