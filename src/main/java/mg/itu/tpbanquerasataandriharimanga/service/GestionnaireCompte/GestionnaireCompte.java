@@ -63,14 +63,42 @@ public class GestionnaireCompte {
     public CompteBancaire update(CompteBancaire compte) {
         return em.merge(compte);
     }
-    
+
     @Transactional
     public void transferer(CompteBancaire source, CompteBancaire destination,
             int montant) {
+
+        this.retirer(source, montant);
+        this.deposer(destination, montant);
+        /*
         source.retirer(montant);
         destination.deposer(montant);
         update(source);
         update(destination);
+         */
     }
 
+    /**
+     * Dépôt d'argent sur un compte bancaire.
+     *
+     * @param compteBancaire
+     * @param montant
+     */
+    @Transactional
+    public void deposer(CompteBancaire compteBancaire, int montant) {
+        compteBancaire.deposer(montant);
+        update(compteBancaire);
+    }
+
+    /**
+     * Retrait d'argent sur un compte bancaire.
+     *
+     * @param compteBancaire
+     * @param montant
+     */
+    @Transactional
+    public void retirer(CompteBancaire compteBancaire, int montant) {
+        compteBancaire.retirer(montant);
+        update(compteBancaire);
+    }
 }
