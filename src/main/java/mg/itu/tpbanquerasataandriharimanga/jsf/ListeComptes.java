@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mg.itu.tpbanquerasataandriharimanga.entity.CompteBancaire;
 import mg.itu.tpbanquerasataandriharimanga.service.GestionnaireCompte.GestionnaireCompte;
+import mg.itu.tpbanquerasataandriharimanga.util.Util;
 
 /**
  *
@@ -37,5 +38,11 @@ public class ListeComptes implements Serializable {
             allComptes = compteManager.getAllComptes();
         }
         return allComptes;
+    }
+
+    public String supprimerCompte(CompteBancaire compteBancaire) {
+        compteManager.supprimerCompte(compteBancaire);
+        Util.addFlashInfoMessage("Compte de " + compteBancaire.getNom() + " supprimé");
+        return "listeComptes?faces-redirect=true";
     }
 }
