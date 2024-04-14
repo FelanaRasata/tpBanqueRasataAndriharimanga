@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 
 /**
@@ -32,6 +33,8 @@ public class CompteBancaire implements Serializable {
     }
     
     private String nom;
+    
+    @PositiveOrZero
     private int solde;
     
     public CompteBancaire() {
