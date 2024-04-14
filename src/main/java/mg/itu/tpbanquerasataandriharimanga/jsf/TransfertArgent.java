@@ -10,6 +10,7 @@ import jakarta.inject.Inject;
 import java.io.Serializable;
 import mg.itu.tpbanquerasataandriharimanga.entity.CompteBancaire;
 import mg.itu.tpbanquerasataandriharimanga.service.GestionnaireCompte.GestionnaireCompte;
+import mg.itu.tpbanquerasataandriharimanga.util.Util;
 
 /**
  *
@@ -58,12 +59,43 @@ public class TransfertArgent implements Serializable {
 
     public String transferer() {
 
+        boolean erreur = false;
+
         CompteBancaire source = compteManager.findById(idSource);
+        if (source == null) {
+            // Message d'erreur associé au composant source ; form:source est l'id client
+            // si l'id du formulaire est "form" et l'id du champ de saisie de l'id de la source est "source"
+            // dans la page JSF qui lance le transfert.
+            Util.messageErreur("Aucun compte avec cet id !", "Aucun compte avec cet id !", "form:source");
+            erreur = true;
+        } else {
+            if (source.getSolde() < montant) {
+                // à compléter pour le cas où le solde du compte source est insuffisant...
+
+                Util.messageErreur("Le montant du solde est insuffisant pour ce transfert", "Manque de fond", "form:montant");
+
+                erreur = true;
+            }
+        }
+
         CompteBancaire destination = compteManager.findById(idDestination);
-        System.out.println("****************\"listeComptes?faces-redirect=true\"");
+
+        if (destination == null) {
+            Util.messageErreur("Aucun compte avec cet id !", "Aucun compte avec cet id !", "form:destination");
+            erreur = true;
+        }
+
+        if (erreur) { // en cas d'erreur, rester sur la même page
+            return null;
+        }
+
         compteManager.transferer(source, destination, montant);
 
-        System.out.println("****************\"listeComptes?faces-redirect=true\"");
+        // Message de succès ; addFlash à cause de la redirection.
+        String message = "Transfert correctement effectué : "
+                + " le montant " + montant
+                + " de " + source.getNom() + " vers " + destination.getNom();
+        Util.addFlashInfoMessage(message);
 
         return "listeComptes?faces-redirect=true";
     }
