@@ -17,14 +17,15 @@
                     <h:panelGrid columns="3">
                         Nom : 
                         <h:inputText id="nom" value="#{ajoutCompte.nom}"
-                                     required="true"/>
-                        <h:message for="source"/>
+                                     required="true"
+                                     validatorMessage="Nom nécessaire"/>
+                        <h:message for="nom"/>
 
                         Solde : 
                         <h:inputText id="solde"  value="#{ajoutCompte.solde}"
                                      required="true"
                                      converterMessage="Le Solde est un nombre"/>
-                        <h:message for="montant"/>
+                        <h:message for="solde"/>
                     </h:panelGrid>
                     <h:commandButton id="create" value="Ajouter" action="#{ajoutCompte.ajouter()}"/>
                 </h:form>
