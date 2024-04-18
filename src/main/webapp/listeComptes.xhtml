@@ -59,8 +59,18 @@
                                 <h:outputText value="Modifier"/>
                             </f:facet>
                             <h:link outcome="modificationCompte?id=#{item.id}"
-                                           title="Modifier le compte de #{item.nom}" >
+                                    title="Modifier le compte de #{item.nom}" >
                                 <h:graphicImage name="images/mod.png" width='25'/>
+                            </h:link>
+                        </p:column>
+                        <p:column width="50" style="text-align:center;" >
+                            <f:facet name="header">
+                                <h:outputText escape="false" value="Historique&lt;br/>opérations"/>
+                            </f:facet>
+                            <h:link outcome="operations"
+                                    title="Détails sur le compte de #{item.nom}" >
+                                <f:param name="id" value="#{item.id}"/>
+                                Détails
                             </h:link>
                         </p:column>
                     </p:dataTable>

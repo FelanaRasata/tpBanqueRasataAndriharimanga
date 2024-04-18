@@ -4,14 +4,19 @@
  */
 package mg.itu.tpbanquerasataandriharimanga.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -19,8 +24,7 @@ import java.io.Serializable;
  */
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "CompteBancaire.findAll", query = "SELECT c FROM CompteBancaire c"),
-    })
+    @NamedQuery(name = "CompteBancaire.findAll", query = "SELECT c FROM CompteBancaire c"),})
 public class CompteBancaire implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -31,21 +35,21 @@ public class CompteBancaire implements Serializable {
     public Integer getId() {
         return id;
     }
-    
+
     private String nom;
-    
+
     @PositiveOrZero
     private int solde;
-    
+
     public CompteBancaire() {
+
     }
-    
+
     public CompteBancaire(String nom, int solde) {
+        operations.add(new OperationBancaire("Création du compte", solde));
         this.nom = nom;
         this.solde = solde;
     }
-
-    
 
     @Override
     public int hashCode() {
@@ -71,7 +75,7 @@ public class CompteBancaire implements Serializable {
     public String toString() {
         return "mg.itu.tpbanquerasataandriharimanga.entity.CompteBancaire[ id=" + id + " ]";
     }
-    
+
     public String getNom() {
         return nom;
     }
@@ -90,14 +94,24 @@ public class CompteBancaire implements Serializable {
 
     public void deposer(int montant) {
         solde += montant;
+        operations.add(new OperationBancaire("Crédit", montant));
     }
 
     public void retirer(int montant) {
+        int debit = -montant;
         if (montant < solde) {
             solde -= montant;
         } else {
+            debit += (montant - solde);
             solde = 0;
         }
+        operations.add(new OperationBancaire("Débit", debit));
     }
-    
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<OperationBancaire> operations = new ArrayList<>();
+
+    public List<OperationBancaire> getOperations() {
+        return operations;
+    }
 }
