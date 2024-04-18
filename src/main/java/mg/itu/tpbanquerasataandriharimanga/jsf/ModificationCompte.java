@@ -23,7 +23,6 @@ public class ModificationCompte implements Serializable {
     private Integer id;
     CompteBancaire compte;
 
-    private int solde;
     private String nom;
 
     @Inject
@@ -37,7 +36,6 @@ public class ModificationCompte implements Serializable {
 
     public void loadCompte() {
         compte = compteManager.findById(id);
-        this.setSolde(compte.getSolde());
         this.setNom(nom = compte.getNom());
 
     }
@@ -58,14 +56,6 @@ public class ModificationCompte implements Serializable {
         this.compte = compte;
     }
 
-    public int getSolde() {
-        return solde;
-    }
-
-    public void setSolde(int solde) {
-        this.solde = solde;
-    }
-
     public String getNom() {
         return nom;
     }
@@ -76,26 +66,12 @@ public class ModificationCompte implements Serializable {
 
     public String modification() {
 
-        boolean erreur = false;
-
-        if (compte.getSolde() < 0) {
-            Util.messageErreur("Solde invalide", "Solde invalide", "form:solde");
-            erreur = true;
-        }
-
-        if (erreur) {
-            return null;
-        }
-
         compteManager.update(compte);
 
         String message = "Modification enregistré sur compte de " + compte.getId();
 
         if (!compte.getNom().equals(nom)) {
-            message += "| nom : " + nom + " de " + compte.getNom();
-        }
-        if (compte.getSolde() != solde) {
-            message += "| montant : " + solde + " de " + compte.getSolde();
+            message += " nom : " + nom + " de " + compte.getNom();
         }
 
         Util.addFlashInfoMessage(message);
