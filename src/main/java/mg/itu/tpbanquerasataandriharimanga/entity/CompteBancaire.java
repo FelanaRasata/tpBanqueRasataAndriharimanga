@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Version;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ import java.util.List;
  */
 @Entity
 @NamedQueries({
-    @NamedQuery(name = "CompteBancaire.findAll", query = "SELECT c FROM CompteBancaire c"),})
+    @NamedQuery(name = "CompteBancaire.findAll", query = "SELECT c FROM CompteBancaire c join fetch c.operations"),})
 public class CompteBancaire implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -40,12 +41,32 @@ public class CompteBancaire implements Serializable {
 
     @PositiveOrZero
     private int solde;
+    
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<OperationBancaire> operations;
+
+    public List<OperationBancaire> getOperations() {
+        return operations;
+    }
+
+    @Version
+    private int version;
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
 
     public CompteBancaire() {
+        this.operations = new ArrayList<>();
 
     }
 
     public CompteBancaire(String nom, int solde) {
+        this.operations = new ArrayList<>();
         operations.add(new OperationBancaire("Création du compte", solde));
         this.nom = nom;
         this.solde = solde;
@@ -65,10 +86,7 @@ public class CompteBancaire implements Serializable {
             return false;
         }
         CompteBancaire other = (CompteBancaire) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+        return !((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id)));
     }
 
     @Override
@@ -108,10 +126,5 @@ public class CompteBancaire implements Serializable {
         operations.add(new OperationBancaire("Débit", debit));
     }
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<OperationBancaire> operations = new ArrayList<>();
-
-    public List<OperationBancaire> getOperations() {
-        return operations;
-    }
+    
 }
